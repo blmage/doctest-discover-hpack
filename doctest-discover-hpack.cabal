@@ -4,12 +4,48 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1040b1ff7c119e820b11d7a0490191777776b40a1283efbaf85fc6c3c003eb48
+-- hash: d9e5331cf3b1a2a8bb86b206bfcd50640d4c827086bbd899b10e4f6526b84a20
 
 name:           doctest-discover-hpack
 version:        1.0.0
 synopsis:       Automatically discovers and runs Doctests, based on the current Hpack configuration.
-description:    Please see the README on GitHub at <https://github.com/blmage/doctest-discover-hpack#readme>
+description:    Automatically discovers and runs
+                <https://hackage.haskell.org/package/doctest Doctest>s, based on the
+                current <https://hackage.haskell.org/package/hpack hpack> configuration.
+                .
+                === Usage
+                .
+                Define one (or more) test suite(s) in your @package.yaml@ configuration:
+                .
+                > tests:
+                >   my-package-test:
+                >     main:                Doctest.hs
+                >     source-dirs:         test
+                >     ghc-options:
+                >     - -threaded
+                >     - -rtsopts
+                >     - -with-rtsopts=-N
+                >     dependencies:
+                >     - doctest
+                >     - doctest-discover-hpack
+                >     - my-package
+                >     - my-package-exe
+                .
+                Initialize the corresponding driver file(s) with:
+                .
+                > {-# OPTIONS_GHC -F -pgmF doctest-discover-hpack #-}
+                .
+                Upon running your tests, using eg:
+                .
+                > stack test my-package-test
+                .
+                the dependencies of the test suite(s) will automatically be tested,
+                using any necessary language extension, based on:
+                .
+                * the global @default-extensions@,
+                * the @default-extensions@ of the test suite,
+                * the @default-extensions@ of the tested dependency,
+                * the @LANGUAGE@ pragmas of each tested source file.
 category:       Testing
 homepage:       https://github.com/blmage/doctest-discover-hpack#readme
 bug-reports:    https://github.com/blmage/doctest-discover-hpack/issues

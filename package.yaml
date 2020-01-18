@@ -11,7 +11,44 @@ extra-source-files:
 
 category:            Testing
 synopsis:            Automatically discovers and runs Doctests, based on the current Hpack configuration.
-description:         Please see the README on GitHub at <https://github.com/blmage/doctest-discover-hpack#readme>
+description: |
+  Automatically discovers and runs
+  <https://hackage.haskell.org/package/doctest Doctest>s, based on the
+  current <https://hackage.haskell.org/package/hpack hpack> configuration.
+
+  === Usage
+
+  Define one (or more) test suite(s) in your @package.yaml@ configuration:
+
+  > tests:
+  >   my-package-test:
+  >     main:                Doctest.hs
+  >     source-dirs:         test
+  >     ghc-options:
+  >     - -threaded
+  >     - -rtsopts
+  >     - -with-rtsopts=-N
+  >     dependencies:
+  >     - doctest
+  >     - doctest-discover-hpack
+  >     - my-package
+  >     - my-package-exe
+
+  Initialize the corresponding driver file(s) with:
+
+  > {-# OPTIONS_GHC -F -pgmF doctest-discover-hpack #-}
+
+  Upon running your tests, using eg:
+
+  > stack test my-package-test
+
+  the dependencies of the test suite(s) will automatically be tested,
+  using any necessary language extension, based on:
+
+  * the global @default-extensions@,
+  * the @default-extensions@ of the test suite,
+  * the @default-extensions@ of the tested dependency,
+  * the @LANGUAGE@ pragmas of each tested source file.
 
 dependencies:
 - base >= 4.7 && < 5
